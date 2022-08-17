@@ -4,9 +4,9 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        me: async (parent, args) => {
-            if (AudioContext.user) {
-            const userData = await User.findOne({})
+        me: async (parent, args, context) => {
+            if (context.user) {
+            const userData = await User.findOne({_id: context.user._id})
                 .select('-__v -password')
                 .populate('thoughts')
                 .populate('friends');
@@ -15,19 +15,12 @@ const resolvers = {
         }
         throw new AuthenticationError('You must be logged in');
         },
-        thoughts: async( parent, { username }) => {
-            const params = username ? { username } : {};
-            return Thought.find().sort({ createdAt: -1 });
-        },
-        thought: async( parent, { id }) => {
-            return Thought.findOne(id);
-        },
         // get all users
         users: async() => {
             return User.find()
-            .select('-__v -password')
-            .populate('friends')
-            .populate('thoughts');
+                .select('-__v -password')
+                .populate('friends')
+                .populate('thoughts');
         },
         // get a user by username
         user: async( parent, { username }) => {
@@ -36,7 +29,13 @@ const resolvers = {
                 .populate('friends')
                 .populate('thoughts');
         },
-        
+        thoughts: async( parent, { username }) => {
+            const params = username ? { username } : {};
+            return Thought.find(params).sort({ createdAt: -1 });
+        },
+        thought: async( parent, { _id }) => {
+            return Thought.findOne(_id);
+        }  
     },
     Mutation: {
         addUser: async(parent, args) => {
@@ -72,7 +71,7 @@ const resolvers = {
             }
             throw new AuthenticationError('You must be logged in');
         },
-        addReaction: async(parent,{ thoughtId, reactionBody }, context) => {
+        addReaction: async(parent, { thoughtId, reactionBody }, context) => {
             if (context.user) {
                 const updatedThought = await Thought.findOneAndUpdate(
                     {_id: thoughtId},
