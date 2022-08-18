@@ -16,7 +16,7 @@ const SingleThought = (props) => {
   });
 
   const thought = data?.thought || {};
-  console.log(thought);
+  //console.log(thought.createdAt);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -28,8 +28,8 @@ const SingleThought = (props) => {
         <p className="card-header">
           <span style={{ fontWeight: 700 }} className="text-light">
             {thought.username}
-          </span> {' '}
-          Hello this is your thoughts... {thought.createdAt}
+          </span> {" "}
+          thought on {thought.createdAt}
         </p>
         <div className="card-body">
           <p>{thought.thoughtText}</p>
