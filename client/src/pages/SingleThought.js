@@ -2,7 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import ReactionList from '../components/ReactionList';
+import ReactionForm from '../components/ReactionForm';
 
+import Auth from '../utils/auth';
 import { useQuery } from '@apollo/client';
 import { QUERY_THOUGHT } from '../utils/queries';
 
@@ -14,6 +16,7 @@ const SingleThought = (props) => {
   });
 
   const thought = data?.thought || {};
+  console.log(thought);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -25,8 +28,8 @@ const SingleThought = (props) => {
         <p className="card-header">
           <span style={{ fontWeight: 700 }} className="text-light">
             {thought.username}
-          </span>{' '}
-          thought on {thought.createdAt}
+          </span> {' '}
+          Hello this is your thoughts... {thought.createdAt}
         </p>
         <div className="card-body">
           <p>{thought.thoughtText}</p>
@@ -36,8 +39,10 @@ const SingleThought = (props) => {
       {thought.reactionCount > 0 && (
         <ReactionList reactions={thought.reactions} />
       )}
+
+      {Auth.loggedIn() && <ReactionForm thoughtId={thought._id} />}
     </div>
   );
 };
 
-export default SingleThought;
+export default SingleThought; 

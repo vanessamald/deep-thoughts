@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   ApolloClient,
   InMemoryCache,
@@ -17,6 +17,7 @@ import NoMatch from './pages/NoMatch';
 import SingleThought from './pages/SingleThought';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
+
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -58,17 +59,19 @@ function App() {
                 element={<Signup />} 
               />
               <Route 
-                path="/profile" 
+                path="/profile"
+                element={<Profile />} 
+              />
+              <Route 
+                path="/profile/:username"
                 element={<Profile />} 
               />
               <Route 
                 path="/thought/:id" 
                 element={<SingleThought />} 
               />
-              <Route 
-                path="*" 
-                element={<NoMatch />} 
-              />
+              
+             
             </Routes>
           </div>
           <Footer />
